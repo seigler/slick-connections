@@ -4,14 +4,37 @@
   line-height: 24px;
   font-weight: 400;
 
-  color: #0f0f0f;
-  background-color: #f6f6f6;
+  --background-lightness: 90%;
+  --background-chroma: 0;
+  --background-hue: 0;
+  --foreground-lightness: 10%;
+  --foreground-chroma: 0;
+  --foreground-hue: 0;
+
+  --color-foreground: lch(var(--foreground-lightness) var(--foreground-chroma) var(--foreground-hue));
+  --color-background: lch(var(--background-lightness) var(--background-chroma) var(--background-hue));
+  --color-foreground-trace: lch(var(--foreground-lightness) var(--foreground-chroma) var(--foreground-hue) / 0.1);
+  --color-foreground-faint: lch(var(--foreground-lightness) var(--foreground-chroma) var(--foreground-hue) / 0.25);
+
+  color: var(--color-foreground);
+  background-color: var(--color-background);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-lightness: 10%;
+    --background-chroma: 0;
+    --background-hue: 0;
+    --foreground-lightness: 90%;
+    --foreground-chroma: 0;
+    --foreground-hue: 0;
+  }
 }
 
 .container {
@@ -51,13 +74,14 @@
   width: 20vmin;
   border-radius: 1vmin;
   flex-grow: 0;
-  background-color: #f6f6f622;
+  background-color: var(--color-foreground-trace);
 }
 .puzzle-item:hover, .puzzle-item:focus-visible {
-  background-color: #f6f6f633;
+  box-shadow: 0 0 3vmin -1vmin inset var(--color-foreground);
 }
 .puzzle-item.is-selected {
-  outline: 0.33vmin solid #ffffffdd;
+  background-color: var(--color-foreground-faint);
+  outline: 0.33vmin solid var(--color-foreground);
 }
 
 a {
@@ -72,59 +96,4 @@ a:hover {
 
 h1 {
   text-align: center;
-}
-
-input,
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  color: #0f0f0f;
-  background-color: #ffffff;
-  transition: border-color 0.25s;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
-}
-
-button {
-  cursor: pointer;
-}
-
-button:hover {
-  border-color: #396cd8;
-}
-button:active {
-  border-color: #396cd8;
-  background-color: #e8e8e8;
-}
-
-input,
-button {
-  outline: none;
-}
-
-#greet-input {
-  margin-right: 5px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #f6f6f6;
-    background-color: #2f2f2f;
-  }
-
-  a:hover {
-    color: #24c8db;
-  }
-
-  input,
-  button {
-    color: #ffffff;
-    background-color: #0f0f0f98;
-  }
-  button:active {
-    background-color: #0f0f0f69;
-  }
 }
