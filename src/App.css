@@ -66,12 +66,12 @@
 }
 
 .puzzle {
-  --unit: 0.5rem;
+  --unit: min(0.5rem, 1.15vw);
   display: flex;
   flex-direction: column;
   gap: calc(1 * var(--unit));
   font-size: calc(3 * var(--unit));
-  font-weight: 600;
+  font-weight: 700;
   width: calc((20 * 4 + 3) * var(--unit));
   margin: 0 auto;
 }
@@ -105,13 +105,14 @@
   justify-content: center;
   align-items: center;
   border-radius: calc(1 * var(--unit));
+  font-weight: 500;
 
   &[data-level="0"] {
-    background-color: var(--group-blue);
+    background-color: var(--group-yellow);
   }
 
   &[data-level="1"] {
-    background-color: var(--group-yellow);
+    background-color: var(--group-blue);
   }
 
   &[data-level="2"] {
@@ -121,6 +122,12 @@
   &[data-level="3"] {
     background-color: var(--group-purple);
   }
+}
+.puzzle-group-name {
+  font-weight: 700;
+}
+.puzzle-group-members {
+  font-weight: 500;
 }
 .puzzle-actions {
   display: flex;
