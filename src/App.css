@@ -19,14 +19,14 @@
   color: var(--color-foreground);
   background-color: var(--color-background);
 
-  /* --group-blue: lch(78.8% 23.7 270.9);
-  --group-yellow: lch(74.83% 54.18 117.22);
-  --group-green: lch(89.36% 57.75 90.6);
+  /* --group-green: lch(74.83% 54.18 117.22);
+  --group-blue: lch(78.8% 23.7 270.9);
+  --group-yellow: lch(89.36% 57.75 90.6);
   --group-purple: lch(61.69% 41.01 319.57); */
-  --group-blue: lch(80% 23.7 270.9);
-  --group-yellow: lch(80% 54.18 117.22);
-  --group-green: lch(80% 57.75 90.6);
-  --group-purple: lch(80% 41.01 319.57);
+  --group-green: lch(74.83% 54.18 117.22);
+  --group-blue: lch(75% 23.7 270.9);
+  --group-yellow: lch(85% 57.75 90.6);
+  --group-purple: lch(65% 41.01 319.57);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -45,8 +45,8 @@
     --foreground-hue: 0;
 
     --group-blue: lch(30% 23.7 270.9);
-    --group-yellow: lch(30% 54.18 117.22);
-    --group-green: lch(30% 57.75 90.6);
+    --group-green: lch(30% 54.18 117.22);
+    --group-yellow: lch(30% 57.75 90.6);
     --group-purple: lch(30% 41.01 319.57);
   }
 }
@@ -83,6 +83,7 @@
   gap: calc(1 * var(--unit));
 }
 .puzzle-item {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -93,6 +94,13 @@
   padding: 0;
   border-radius: calc(1 * var(--unit));
   background-color: var(--color-foreground-trace);
+  font-weight: 500;
+}
+.badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  filter: grayscale(100%);
 }
 .puzzle-item.is-selected {
   background-color: var(--color-foreground-faint);
@@ -112,11 +120,11 @@
   }
 
   &[data-level="1"] {
-    background-color: var(--group-blue);
+    background-color: var(--group-green);
   }
 
   &[data-level="2"] {
-    background-color: var(--group-green);
+    background-color: var(--group-blue);
   }
 
   &[data-level="3"] {
@@ -133,6 +141,12 @@
   display: flex;
   margin-top: calc(1 * var(--unit));
   gap: calc(1 * var(--unit));
+}
+.puzzle-actions-secondary {
+  display: flex;
+  flex-direction: column;
+  gap: calc(1 * var(--unit));
+  min-width: calc(20 * var(--unit));
 }
 
 a {
@@ -156,7 +170,7 @@ button {
   color: var(--color-foreground);
   font-size: inherit;
   border: none;
-  padding: 0.5em 1.5em;
+  padding: 0.5em;
   border-radius: calc(1 * var(--unit, 0.5em));
 }
 button:disabled {

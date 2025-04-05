@@ -1,4 +1,4 @@
-import { For, createMemo, createSignal } from "solid-js";
+import { For } from "solid-js";
 import connections from "./assets/connections.json";
 import "./App.css";
 import { shuffleArray } from "./utils";
@@ -16,6 +16,7 @@ function fromIndex(index: number): [number, number] {
 function App() {
   const [store, setStore] = createStore({
     puzzleIndex: 0,
+    pinnedCount: 3,
     selected: [] as number[],
     solvedGroups: [] as Answer[],
     puzzle: shuffleArray(Array.from({ length: 16 }, (_, i) => i)),
@@ -34,6 +35,7 @@ function App() {
       answer: store.answers[groupIndex].members[memberIndex],
     };
   };
+
   const handleGuess = () => {
     const selectedAnswers = store.selected.map((x) => getFromPuzzle(x));
     const { level } = selectedAnswers[0];
@@ -43,25 +45,47 @@ function App() {
       alert("wrong");
       return;
     }
+    const selectedPinnedCount = store.selected.reduce(
+      (acc, cur) => acc + (cur < store.pinnedCount ? 1 : 0),
+      0
+    );
     setStore({
-      puzzle: store.puzzle.filter((x) => store.selected.every((s) => store.puzzle[s] !== x)),
+      pinnedCount: store.pinnedCount - selectedPinnedCount,
+      puzzle: store.puzzle.filter((x) =>
+        store.selected.every((s) => store.puzzle[s] !== x)
+      ),
       selected: [],
-    })
+    });
     const newSolvedGroup = store.answers.find((x) => x.level === level);
     if (newSolvedGroup != null) {
       setStore({
-        solvedGroups: [...store.solvedGroups, newSolvedGroup]
-      })
+        solvedGroups: [...store.solvedGroups, newSolvedGroup],
+      });
+    }
+    if (store.puzzle.length === 0) {
+      // completely solved!
     }
   };
-  // const handlePinUnpin = () => {
-  //   const sel = store.selected
-  //   if (sel.every(x => x <= pinnedCount())) {
-  //     // we are unpinning
-  //     return
-  //   }
-  //   // we are pinning
-  // }
+
+  const handleShuffle = () => {
+    const pinned = store.puzzle.slice(0, store.pinnedCount);
+    const toShuffle = store.puzzle.slice(store.pinnedCount);
+    setStore({
+      puzzle: [...pinned, ...shuffleArray(toShuffle)],
+    });
+  };
+
+  const handlePinUnpin = () => {
+    if (store.selected.every((x) => x <= store.pinnedCount)) {
+      // we are unpinning
+      setStore({
+        pinnedCount: store.pinnedCount - store.selected.length,
+        selected: [],
+      })
+      return;
+    }
+    // we are pinning
+  };
 
   return (
     <main class="container">
@@ -98,6 +122,7 @@ function App() {
                     }}
                   >
                     {getFromPuzzle(index).answer}
+                    {store.pinnedCount > index && <div class="badge">🔒</div>}
                   </button>
                 );
               })}
@@ -105,9 +130,16 @@ function App() {
           )}
         </For>
         <div class="puzzle-actions">
-          <button type="button" disabled={store.selected.length === 0}>
-            Pin
-          </button>
+          <div class="puzzle-actions-secondary">
+            <button type="button" disabled={store.selected.length === 0}>
+              {store.selected.length > 0 && store.selected.every((x) => x <= store.pinnedCount)
+                ? "Unpin"
+                : "Pin"}
+            </button>
+            <button type="button" on:click={handleShuffle}>
+              Shuffle
+            </button>
+          </div>
           <button
             id="submitButton"
             type="button"
