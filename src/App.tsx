@@ -76,15 +76,37 @@ function App() {
   };
 
   const handlePinUnpin = () => {
-    if (store.selected.every((x) => x <= store.pinnedCount)) {
+    if (store.selected.every((x) => x < store.pinnedCount)) {
       // we are unpinning
+      const puzzleStart = Array.from({ length: store.pinnedCount }, (_, i) => i)
+        .filter((x) => !store.selected.includes(x))
+        .map((x) => store.puzzle[x]);
+      const puzzleMiddle = store.selected.map((x) => store.puzzle[x]);
+      const puzzleEnd = store.puzzle.slice(store.pinnedCount);
+      const newPuzzle = [...puzzleStart, ...puzzleMiddle, ...puzzleEnd];
       setStore({
         pinnedCount: store.pinnedCount - store.selected.length,
         selected: [],
-      })
+        puzzle: newPuzzle,
+      });
       return;
     }
     // we are pinning
+    const puzzleStart = store.puzzle.slice(0, store.pinnedCount);
+    const puzzleMid = store.selected
+      .filter((x) => x >= store.pinnedCount)
+      .map((x) => store.puzzle[x]);
+    const puzzleEnd = Array.from(
+      { length: 16 - store.pinnedCount },
+      (_, i) => i + store.pinnedCount
+    )
+      .filter((x) => !store.selected.includes(x))
+      .map((x) => store.puzzle[x]);
+    setStore({
+      pinnedCount: puzzleStart.length + puzzleMid.length,
+      selected: [],
+      puzzle: [...puzzleStart, ...puzzleMid, ...puzzleEnd]
+    })
   };
 
   return (
@@ -106,12 +128,14 @@ function App() {
             <div class="puzzle-row">
               {[0, 1, 2, 3].map((col) => {
                 const index = 4 * row + col;
+                const answer = getFromPuzzle(index).answer;
                 return (
                   <button
                     classList={{
                       "puzzle-item": true,
                       "is-selected": store.selected.includes(index),
                     }}
+                    style={{ "view-transition-name": `puzzle-${answer}` }}
                     type="button"
                     on:click={() => {
                       setStore({
@@ -121,7 +145,7 @@ function App() {
                       });
                     }}
                   >
-                    {getFromPuzzle(index).answer}
+                    {answer}
                     {store.pinnedCount > index && <div class="badge">🔒</div>}
                   </button>
                 );
@@ -131,8 +155,13 @@ function App() {
         </For>
         <div class="puzzle-actions">
           <div class="puzzle-actions-secondary">
-            <button type="button" disabled={store.selected.length === 0}>
-              {store.selected.length > 0 && store.selected.every((x) => x <= store.pinnedCount)
+            <button
+              type="button"
+              disabled={store.selected.length === 0}
+              on:click={handlePinUnpin}
+            >
+              {store.selected.length > 0 &&
+              store.selected.every((x) => x < store.pinnedCount)
                 ? "Unpin"
                 : "Pin"}
             </button>
