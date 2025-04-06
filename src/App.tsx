@@ -1,6 +1,7 @@
 import { For } from "solid-js";
 import "./App.css";
 import useAppModel from "./useAppModel";
+import FitText from "./FitText";
 
 function App() {
   const {
@@ -35,6 +36,7 @@ function App() {
               on:input={({ target: { value } }) =>
                 handleSelectGame(parseInt(value, 10))
               }
+              value={store.puzzleId}
             >
               <For each={connections}>
                 {({ id }) => <option value={id}>{id}</option>}
@@ -53,6 +55,7 @@ function App() {
             </button>
           </div>
         </header>
+        <div>Create four groups of four words!</div>
         <For each={store.solvedGroups}>
           {({ group, level, members }) => (
             <div class="puzzle-row">
@@ -68,7 +71,7 @@ function App() {
             <div class="puzzle-row">
               {[0, 1, 2, 3].map((col) => {
                 const index = 4 * row + col;
-                const answer = getFromPuzzle(index).answer;
+                const answer = () => getFromPuzzle(index).answer;
                 return (
                   <button
                     classList={{
@@ -85,7 +88,7 @@ function App() {
                       });
                     }}
                   >
-                    {answer}
+                    <FitText body={answer} />
                     {store.pinnedCount > index && <div class="badge">🔒</div>}
                   </button>
                 );

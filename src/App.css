@@ -76,13 +76,13 @@
   flex-direction: column;
   gap: calc(1 * var(--unit));
   font-size: calc(3 * var(--unit));
-  font-weight: 700;
   width: calc((20 * 4 + 3) * var(--unit));
   margin: 0 auto;
 }
 
 .puzzle-header {
   display: flex;
+  align-items: center;
   flex-direction: row;
   > h1 {
     flex-grow: 1;
@@ -112,10 +112,11 @@
   user-select: none;
   flex-basis: 0;
   flex-grow: 1;
-  padding: 0;
+  padding: calc(1 * var(--unit));
   border-radius: calc(1 * var(--unit));
   background-color: var(--color-foreground-trace);
-  font-weight: 500;
+  font-size: calc(5 * var(--unit));
+  font-weight: 600;
 }
 .badge {
   position: absolute;
@@ -194,6 +195,7 @@ h1 {
 button {
   appearance: none;
   overflow: visible;
+  min-width: 2em;
   background: var(--color-foreground-faint);
   color: var(--color-foreground);
   font-size: inherit;
@@ -202,7 +204,7 @@ button {
   border-radius: calc(1 * var(--unit, 0.5em));
 }
 button:disabled {
-  opacity: 0.5;
+  opacity: 0.25;
 }
 button:focus-visible, button:hover {
   box-shadow: 0 0 3em -1.5em inset var(--color-foreground)
