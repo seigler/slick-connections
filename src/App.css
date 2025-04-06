@@ -1,4 +1,9 @@
+*, :before, :after {
+  box-sizing: inherit;
+}
+
 :root {
+  box-sizing: border-box;
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 24px;
@@ -76,6 +81,22 @@
   margin: 0 auto;
 }
 
+.puzzle-header {
+  display: flex;
+  flex-direction: row;
+  > h1 {
+    flex-grow: 1;
+    text-align: left;
+    margin: 0;
+  }
+}
+
+.puzzle-header-actions {
+  display: flex;
+  flex-direction: row;
+  gap: calc(1 * var(--unit));
+}
+
 .puzzle-row {
   display: flex;
   justify-content: center;
@@ -147,6 +168,13 @@
   flex-direction: column;
   gap: calc(1 * var(--unit));
   min-width: calc(20 * var(--unit));
+}
+
+select {
+  font-size: 0.8em;
+  line-height: 1;
+  margin: 0;
+  padding: 1em;
 }
 
 a {
