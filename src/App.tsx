@@ -3,6 +3,13 @@ import "./App.css";
 import useAppModel from "./useAppModel";
 import FitText from "./FitText";
 
+// TODO
+// add routing
+// make overview page with calendar list of puzzles
+// show solved / aced / busted
+// make detail page with puzzle id in path
+// add nav links
+
 function App() {
   const {
     connections,
@@ -12,6 +19,7 @@ function App() {
     handlePinUnpin,
     handleSelectGame,
     handleShuffle,
+    handleDeselect,
     getFromPuzzle,
   } = useAppModel();
 
@@ -97,21 +105,24 @@ function App() {
           )}
         </For>
         <div class="puzzle-actions">
-          <div class="puzzle-actions-secondary">
-            <button
-              type="button"
-              disabled={store.selected.length === 0}
-              on:click={handlePinUnpin}
-            >
-              {store.selected.length > 0 &&
-              store.selected.every((x) => x < store.pinnedCount)
-                ? "Unpin"
-                : "Pin"}
-            </button>
-            <button type="button" on:click={handleShuffle}>
-              Shuffle
-            </button>
-          </div>
+          <button
+            type="button"
+            disabled={store.selected.length === 0}
+            on:click={handlePinUnpin}
+          >
+            {store.selected.length > 0 &&
+            store.selected.every((x) => x < store.pinnedCount)
+              ? "Unpin"
+              : "Pin"}
+          </button>
+          <button type="button" on:click={handleShuffle}>
+            Shuffle
+          </button>
+          <button type="button" on:click={handleDeselect} disabled={
+            store.selected.length === 0
+          }>
+            Deselect all
+          </button>
           <button
             id="submitButton"
             type="button"

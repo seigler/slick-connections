@@ -20,6 +20,7 @@
   --color-background: lch(var(--background-lightness) var(--background-chroma) var(--background-hue));
   --color-foreground-trace: lch(var(--foreground-lightness) var(--foreground-chroma) var(--foreground-hue) / 0.1);
   --color-foreground-faint: lch(var(--foreground-lightness) var(--foreground-chroma) var(--foreground-hue) / 0.25);
+  --color-foreground-medium: lch(var(--foreground-lightness) var(--foreground-chroma) var(--foreground-hue) / 0.5);
 
   color: var(--color-foreground);
   background-color: var(--color-background);
@@ -112,20 +113,21 @@
   user-select: none;
   flex-basis: 0;
   flex-grow: 1;
-  padding: calc(1 * var(--unit));
+  padding: calc(0.5 * var(--unit));
   border-radius: calc(1 * var(--unit));
   background-color: var(--color-foreground-trace);
   font-size: calc(5 * var(--unit));
   font-weight: 600;
 }
 .badge {
+  font-size: calc(3 * var(--unit));
   position: absolute;
   top: 0;
   left: 0;
   filter: grayscale(100%);
 }
 .puzzle-item.is-selected {
-  background-color: var(--color-foreground-faint);
+  background-color: var(--color-foreground-medium);
   outline: calc(0.33 * var(--unit)) solid var(--color-foreground);
 }
 .puzzle-group {
@@ -157,18 +159,17 @@
   font-weight: 700;
 }
 .puzzle-group-members {
-  font-weight: 500;
+  font-weight: 400;
+  font-size: 0.8em;
 }
 .puzzle-actions {
   display: flex;
-  margin-top: calc(1 * var(--unit));
+  margin-top: calc(4 * var(--unit));
   gap: calc(1 * var(--unit));
-}
-.puzzle-actions-secondary {
-  display: flex;
-  flex-direction: column;
-  gap: calc(1 * var(--unit));
-  min-width: calc(20 * var(--unit));
+  &>button {
+    flex-basis: 0;
+    flex-grow: 1;
+  }
 }
 
 select {
@@ -211,7 +212,4 @@ button:focus-visible, button:hover {
 }
 button:active {
   box-shadow: 0 0 3em -1.5em inset var(--color-foreground)
-}
-#submitButton {
-  flex-grow: 1;
 }

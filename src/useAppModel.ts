@@ -1,6 +1,8 @@
+import { makePersisted } from "@solid-primitives/storage";
 import connections from "./assets/connections.json";
 import { shuffleArray } from "./utils";
 import { createStore } from "solid-js/store";
+import { tauriStorage } from "@solid-primitives/storage/tauri";
 
 type Connection = (typeof connections)[number];
 type Answer = Connection["answers"][number];
@@ -11,17 +13,34 @@ function fromIndex(index: number): [number, number] {
   return [row, col];
 }
 
+type AppStore = {
+  puzzleId: number;
+  pinnedCount: number;
+  selected: number[];
+  solvedGroups: Answer[];
+  puzzle: number[];
+  get answers(): Answer[];
+};
+
 export default function useAppModel() {
-  const [store, setStore] = createStore({
-    puzzleId: 1,
-    pinnedCount: 0,
-    selected: [] as number[],
-    solvedGroups: [] as Answer[],
-    puzzle: shuffleArray(Array.from({ length: 16 }, (_, i) => i)),
-    get answers() {
-      return connections.find((x) => x.id === store.puzzleId)!.answers;
-    },
-  });
+  const storage =
+    "__TAURI_INTERNALS__" in window ? tauriStorage("AppStore") : localStorage;
+  const [store, setStore] = makePersisted(
+    createStore<AppStore>({
+      puzzleId: 1,
+      pinnedCount: 0,
+      selected: [],
+      solvedGroups: [],
+      puzzle: shuffleArray(Array.from({ length: 16 }, (_, i) => i)),
+      get answers(): Answer[] {
+        return connections.find((x) => x.id === store.puzzleId)!.answers;
+      },
+    }),
+    {
+      name: "slick-connections",
+      storage,
+    }
+  );
 
   const handleSelectGame = (newId: number) => {
     setStore({
@@ -83,6 +102,12 @@ export default function useAppModel() {
     });
   };
 
+  const handleDeselect = () => {
+    setStore({
+      selected: [],
+    });
+  };
+
   const handlePinUnpin = () => {
     if (store.selected.every((x) => x < store.pinnedCount)) {
       // we are unpinning
@@ -125,6 +150,7 @@ export default function useAppModel() {
     handlePinUnpin,
     handleSelectGame,
     handleShuffle,
+    handleDeselect,
     getFromPuzzle,
   };
 }
