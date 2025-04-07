@@ -64,7 +64,8 @@ export default function useAppModel() {
   };
 
   const handleGuess = () => {
-    const selectedAnswers = store.selected.map((x) => getFromPuzzle(x));
+    const selected = store.puzzle.length === 4 ? [0, 1, 2, 3] : store.selected
+    const selectedAnswers = selected.map((x) => getFromPuzzle(x));
     const { level } = selectedAnswers[0];
     const isCorrect = selectedAnswers.every((x) => x.level === level);
     if (!isCorrect) {
@@ -72,14 +73,14 @@ export default function useAppModel() {
       alert("wrong");
       return;
     }
-    const selectedPinnedCount = store.selected.reduce(
+    const selectedPinnedCount = selected.reduce(
       (acc, cur) => acc + (cur < store.pinnedCount ? 1 : 0),
       0
     );
     setStore({
       pinnedCount: store.pinnedCount - selectedPinnedCount,
       puzzle: store.puzzle.filter((x) =>
-        store.selected.every((s) => store.puzzle[s] !== x)
+        selected.every((s) => store.puzzle[s] !== x)
       ),
       selected: [],
     });

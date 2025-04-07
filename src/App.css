@@ -72,7 +72,7 @@
 }
 
 .puzzle {
-  --unit: min(0.5rem, 1.15vw);
+  --unit: min(0.5rem, 1vw);
   display: flex;
   flex-direction: column;
   gap: calc(1 * var(--unit));
@@ -101,7 +101,7 @@
 .puzzle-row {
   display: flex;
   justify-content: center;
-  height: calc(15 * var(--unit));
+  height: calc(12 * var(--unit));
   gap: calc(1 * var(--unit));
 }
 .puzzle-item {
@@ -212,4 +212,43 @@ button:focus-visible, button:hover {
 }
 button:active {
   box-shadow: 0 0 3em -1.5em inset var(--color-foreground)
+}
+@keyframes spin {
+  from { transform: scale(1.5) rotate(-10deg) }
+  to { transform: scale(1.5) rotate(10deg) }
+}
+.celebration {
+  z-index: -1;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: repeating-conic-gradient(
+      var(--group-yellow) 0deg 5deg,
+      var(--group-green) 5deg 10deg,
+      var(--group-blue) 10deg 15deg,
+      var(--group-purple) 15deg 20deg
+    );
+    animation: spin 2s linear infinite;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    bottom: 2rem;
+    left: 2rem;
+    background-color: var(--color-background);
+    box-shadow: 0 0 1rem 1rem var(--color-background);
+    border-radius: 1rem;
+  }
 }

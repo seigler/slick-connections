@@ -133,6 +133,7 @@ function App() {
           </button>
         </div>
       </div>
+      { store.solvedGroups.length === 4 && <div class="celebration" /> }
     </main>
   );
 }
