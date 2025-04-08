@@ -19,7 +19,6 @@ type AppStore = {
   selected: number[];
   solvedGroups: Answer[];
   puzzle: number[];
-  get answers(): Answer[];
 };
 
 export default function useAppModel() {
@@ -32,15 +31,22 @@ export default function useAppModel() {
       selected: [],
       solvedGroups: [],
       puzzle: shuffleArray(Array.from({ length: 16 }, (_, i) => i)),
-      get answers(): Answer[] {
-        return connections.find((x) => x.id === store.puzzleId)!.answers;
-      },
     }),
     {
       name: "slick-connections",
       storage,
+      serialize(data) {
+        return JSON.stringify({
+          ...data,
+          selected: [],
+        });
+      },
     }
   );
+
+  const answers = (): Answer[] => {
+    return connections.find((x) => x.id === store.puzzleId)!.answers;
+  };
 
   const handleSelectGame = (newId: number) => {
     setStore({
@@ -55,16 +61,16 @@ export default function useAppModel() {
   const getFromPuzzle = (index: number) => {
     const puzzleIndex = store.puzzle[index];
     const [groupIndex, memberIndex] = fromIndex(puzzleIndex);
-    const group = store.answers[groupIndex];
+    const group = answers()[groupIndex];
     return {
       group: group.group,
       level: group.level,
-      answer: store.answers[groupIndex].members[memberIndex],
+      answer: answers()[groupIndex].members[memberIndex],
     };
   };
 
   const handleGuess = () => {
-    const selected = store.puzzle.length === 4 ? [0, 1, 2, 3] : store.selected
+    const selected = store.puzzle.length === 4 ? [0, 1, 2, 3] : store.selected;
     const selectedAnswers = selected.map((x) => getFromPuzzle(x));
     const { level } = selectedAnswers[0];
     const isCorrect = selectedAnswers.every((x) => x.level === level);
@@ -84,7 +90,7 @@ export default function useAppModel() {
       ),
       selected: [],
     });
-    const newSolvedGroup = store.answers.find((x) => x.level === level);
+    const newSolvedGroup = answers().find((x) => x.level === level);
     if (newSolvedGroup != null) {
       setStore({
         solvedGroups: [...store.solvedGroups, newSolvedGroup],
@@ -131,7 +137,7 @@ export default function useAppModel() {
       .filter((x) => x >= store.pinnedCount)
       .map((x) => store.puzzle[x]);
     const puzzleEnd = Array.from(
-      { length: 16 - store.pinnedCount },
+      { length: store.puzzle.length - store.pinnedCount },
       (_, i) => i + store.pinnedCount
     )
       .filter((x) => !store.selected.includes(x))
