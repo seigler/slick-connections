@@ -3,6 +3,7 @@ import "./App.css";
 import usePuzzleModel from "./usePuzzleModel";
 import FitText from "./FitText";
 import { useNavigate, useParams } from "@solidjs/router";
+import { TbArrowLeft, TbArrowRight, TbArrowUp } from 'solid-icons/tb'
 
 // TODO
 // add routing
@@ -32,7 +33,7 @@ function Puzzle() {
     <main class="container">
       <div class="puzzle">
         <header class="puzzle-header">
-          <h1>Slick Connections</h1>
+          <h2>#{id()}</h2>
           <div class="puzzle-header-actions">
             <button
               type="button"
@@ -41,7 +42,15 @@ function Puzzle() {
               }}
               disabled={id() === 1}
             >
-              -
+              <TbArrowLeft />
+            </button>
+            <button
+              type="button"
+              on:click={() => {
+                navigate('/');
+              }}
+            >
+              <TbArrowUp />
             </button>
             <button
               type="button"
@@ -50,7 +59,7 @@ function Puzzle() {
               }}
               disabled={id() === connections.length - 1}
             >
-              +
+              <TbArrowRight />
             </button>
           </div>
         </header>

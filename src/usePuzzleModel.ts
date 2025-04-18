@@ -2,6 +2,7 @@ import { Accessor, createEffect } from "solid-js";
 import connections from "./assets/connections.json";
 import { shuffleArray } from "./utils";
 import { createStore } from "solid-js/store";
+import useAppModel from "./useAppModel";
 
 type Connection = (typeof connections)[number];
 type Answer = Connection["answers"][number];
@@ -12,7 +13,8 @@ function fromIndex(index: number): [number, number] {
   return [row, col];
 }
 
-type AppStore = {
+type PuzzleStore = {
+  guesses: number;
   pinnedCount: number;
   selected: number[];
   solvedGroups: Answer[];
@@ -20,16 +22,22 @@ type AppStore = {
 };
 
 export default function usePuzzleModel(id: Accessor<number>) {
-  const [store, setStore] = createStore<AppStore>({
+  const [store, setStore] = createStore<PuzzleStore>({
+    guesses: 0,
     pinnedCount: 0,
     selected: [],
     solvedGroups: [],
-    puzzle: shuffleArray(Array.from({ length: 16 }, (_, i) => i)),
+    puzzle: [],
   });
+
+  const {
+    setSolution
+  } = useAppModel()
 
   createEffect(() => {
     id()
     setStore({
+      guesses: 0,
       pinnedCount: 0,
       selected: [],
       solvedGroups: [],
@@ -53,6 +61,7 @@ export default function usePuzzleModel(id: Accessor<number>) {
   };
 
   const handleGuess = () => {
+    setStore('guesses', x => x+1)
     const selected = store.puzzle.length === 4 ? [0, 1, 2, 3] : store.selected;
     const selectedAnswers = selected.map((x) => getFromPuzzle(x));
     const { level } = selectedAnswers[0];
@@ -75,12 +84,11 @@ export default function usePuzzleModel(id: Accessor<number>) {
     });
     const newSolvedGroup = answers().find((x) => x.level === level);
     if (newSolvedGroup != null) {
-      setStore({
-        solvedGroups: [...store.solvedGroups, newSolvedGroup],
-      });
+      setStore('solvedGroups', x => x.concat(newSolvedGroup))
     }
     if (store.puzzle.length === 0) {
       // completely solved!
+      setSolution(id(), store.guesses)
     }
   };
 

@@ -5,7 +5,7 @@ import { tauriStorage } from "@solid-primitives/storage/tauri";
 
 type Solution = {
   id: number
-  mistakes: number
+  guesses: number
 }
 
 type AppStore = {
@@ -24,10 +24,10 @@ export default function useAppModel() {
       storage,
     }
   );
-  function setSolution(id: number, mistakes: number) {
+  function setSolution(id: number, guesses: number) {
     setStore("solutions", id, {
       id,
-      mistakes
+      guesses
     })
   }
 

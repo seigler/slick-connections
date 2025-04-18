@@ -2,17 +2,16 @@ import { createEffect, createSignal, type Accessor } from "solid-js";
 
 export default function FitText(props: { body: Accessor<string> }) {
   let textRef: SVGTextElement | undefined;
-  const [width, setWidth] = createSignal(100);
-  const [height, setHeight] = createSignal(100);
+  const [viewBox, setViewbox] = createSignal<string | undefined>()
 
-  createEffect(() => {
+  createEffect(async () => {
     props.body();
+    await Promise.resolve()
     const bounds = textRef?.getBBox();
     if (bounds === undefined) {
       return;
     }
-    setWidth(bounds.width);
-    setHeight(bounds.height);
+    setViewbox(`0 0 ${bounds.width} ${bounds.height}`)
   });
 
   return (
@@ -21,15 +20,14 @@ export default function FitText(props: { body: Accessor<string> }) {
         width: "100%",
         "max-height": "40%",
       }}
-      viewBox={`0 0 ${width()} ${height()}`}
-      overflow="visible"
+      viewBox={viewBox()}
       fill="currentcolor"
     >
       <text
         ref={textRef}
         x="50%"
         y="50%"
-        dominant-baseline="central"
+        dominant-baseline="middle"
         text-anchor="middle"
         font-size="30px"
         font-family="inherit"
