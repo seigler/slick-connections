@@ -65,7 +65,7 @@ const colorStrings = [
 export default function Dashboard() {
   const { connections, store } = useAppModel();
   const nextUnsolvedId = createMemo(() => {
-    return connections.find((x) => store.solutions[x.id] === undefined)?.id;
+    return connections.find((x) => (store.solutions ?? [])[x.id] === undefined)?.id;
   });
   return (
     <div>
@@ -78,7 +78,7 @@ export default function Dashboard() {
         <div class={styles.calendar}>
           <For each={connections}>
             {(item) => {
-              const isSolved = store.solutions[item.id] !== undefined;
+              const isSolved = (store.solutions ?? [])[item.id] !== undefined;
               const date = new Date(item.date);
               const showHeader = item.id === 1 || date.getDate() === 1;
               return (
