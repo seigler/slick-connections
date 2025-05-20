@@ -25,9 +25,15 @@ export default function useAppModel() {
     }
   );
   function setSolution(id: number, guesses: number) {
-    setStore("solutions", id, {
+    const nextSolutions = [
+      ...(store.solutions ?? []),
+    ];
+    nextSolutions[id] = {
       id,
-      guesses
+      guesses,
+    }
+    setStore({
+      solutions: nextSolutions
     })
   }
 
