@@ -1,4 +1,4 @@
-import { For } from "solid-js";
+import { For, Show } from "solid-js";
 import "./App.css";
 import usePuzzleModel from "./usePuzzleModel";
 import FitText from "./FitText";
@@ -134,6 +134,11 @@ function Puzzle() {
             Submit
           </button>
         </div>
+        <Show when={store.solvedGroups.length === 4}>
+          <pre on:click={() => navigator.clipboard.writeText(store.guessHistory)}>
+            {store.guessHistory}
+          </pre>
+        </Show>
       </div>
       {store.solvedGroups.length === 4 && <div class="celebration" />}
     </main>

@@ -19,7 +19,10 @@ type PuzzleStore = {
   selected: number[];
   solvedGroups: Answer[];
   puzzle: number[];
+  guessHistory: string;
 };
+
+const emoji = ["🟨", "🟩", "🟦", "🟪"];
 
 export default function usePuzzleModel(id: Accessor<number>) {
   const [store, setStore] = createStore<PuzzleStore>({
@@ -28,22 +31,22 @@ export default function usePuzzleModel(id: Accessor<number>) {
     selected: [],
     solvedGroups: [],
     puzzle: [],
+    guessHistory: "",
   });
 
-  const {
-    setSolution
-  } = useAppModel()
+  const { setSolution } = useAppModel();
 
   createEffect(() => {
-    id()
     setStore({
       guesses: 0,
       pinnedCount: 0,
       selected: [],
       solvedGroups: [],
       puzzle: shuffleArray(Array.from({ length: 16 }, (_, i) => i)),
+      guessHistory: `Connections
+Puzzle #${id()}`,
     });
-  })
+  });
 
   const answers = (): Answer[] => {
     return connections.find((x) => x.id === id())!.answers;
@@ -61,11 +64,18 @@ export default function usePuzzleModel(id: Accessor<number>) {
   };
 
   const handleGuess = () => {
-    setStore('guesses', x => x+1)
+    setStore("guesses", (x) => x + 1);
     const selected = store.puzzle.length === 4 ? [0, 1, 2, 3] : store.selected;
     const selectedAnswers = selected.map((x) => getFromPuzzle(x));
     const { level } = selectedAnswers[0];
     const isCorrect = selectedAnswers.every((x) => x.level === level);
+    const guessHistoryLine = selectedAnswers
+      .map((x) => emoji[x.level])
+      .join("");
+    setStore({
+      guessHistory: `${store.guessHistory}
+${guessHistoryLine}`,
+    });
     if (!isCorrect) {
       // TODO you got it wrong
       alert("wrong");
@@ -84,11 +94,11 @@ export default function usePuzzleModel(id: Accessor<number>) {
     });
     const newSolvedGroup = answers().find((x) => x.level === level);
     if (newSolvedGroup != null) {
-      setStore('solvedGroups', x => x.concat(newSolvedGroup))
+      setStore("solvedGroups", (x) => x.concat(newSolvedGroup));
     }
     if (store.puzzle.length === 0) {
       // completely solved!
-      setSolution(id(), store.guesses)
+      setSolution(id(), store.guesses);
     }
   };
 
